@@ -1,0 +1,73 @@
+{%- macro config_volume() %}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{cookiecutter.project_slug}}
+{%- endmacro %}
+{%- macro config_volume_mount() %}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/.env
+              subPath: .env
+{%- endmacro %}
+
+{%- macro environments() %}
+          env:
+            - name: DJANGO_READ_DOT_ENV_FILE
+              value: 'True'
+            - name: DJANGO_SETTINGS_MODULE
+              value: config.settings.production
+{%- endmacro %}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{cookiecutter.project_slug}}
+spec:
+  selector:
+    matchLabels:
+      app: {{cookiecutter.project_slug}}
+  template:
+    metadata:
+      labels:
+        app: {{cookiecutter.project_slug}}
+    spec:
+      {{- config_volume() }}
+      imagePullSecrets:
+        - name: dockerhub-vikasy
+      containers:
+        - name: {{cookiecutter.project_slug}}
+          image: <image>
+          imagePullPolicy: Always
+          # resources:
+          #   limits:
+          #     memory: "128Mi"
+          #     cpu: "500m"
+          ports:
+            - containerPort: 5000
+          command: ['/start']
+          {{- config_volume_mount() }}
+          {{- environments() }}
+          livenessProbe:
+            httpGet:
+              path: /health/
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 1
+            successThreshold: 1
+
+          
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{cookiecutter.project_slug}}
+spec:
+  selector:
+    app: {{cookiecutter.project_slug}}
+  ports:
+    - port: 80
+      targetPort: 5000
+
