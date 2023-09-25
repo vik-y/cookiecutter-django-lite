@@ -1,69 +1,30 @@
-# name: Test Django Template
+name: Test Django Template
 
-# on:
-#   push:
-#     branches:
-#       - main  # or your default branch name
+on:
+  push:
+    branches:
+      - main  # or your default branch name
 
-# jobs:
-#   full_test:
-#     runs-on: self-hosted
+jobs:
+  full_test:
+    runs-on: [ linux ]
 
-#     steps:
-#     - name: Check out code
-#       uses: actions/checkout@v2
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
 
-#     - name: Set up Python
-#       uses: actions/setup-python@v2
-#       with:
-#         python-version: '3.9'  # or any other version you'd like to test against
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'  # or any other version you'd like to test against
 
-#     - name: Install cookiecutter
-#       run: pip install cookiecutter
+    - name: Install cookiecutter
+      run: pip install cookiecutter
 
-#     - name: Install dependencies 
-#       run: sudo apt-get install -y libpq-dev
+    - name: Install dependencies 
+      run: sudo apt-get update && apt-get install -y libpq-dev
 
-#     - name: Run shell tests
-#       run: bash tests/test_template.sh
+    - name: Run shell tests
+      run: bash tests/test_template.sh
   
-
-#   docker:
-#     strategy:
-#       matrix:
-#         compose_file: [docker-compose-local.yaml, docker-compose-prod.yaml]
-#         arg: ['use_postgres="yes"', 'use_postgres="no"']
-
-#     runs-on: self-hosted
-#     # TODO: With postgres and without postgres
-
-#     steps:
-#     - name: Check out code
-#       uses: actions/checkout@v2
-
-#     - name: Set up Python
-#       uses: actions/setup-python@v2
-#       with:
-#         python-version: '3.9'  # or any other version you'd like to test against
-
-#     - name: Install cookiecutter
-#       run: pip install --upgrade pip && pip install cookiecutter
-
-#     - name: Test 
-#       run: |
-#         mkdir -p .cache 
-
-#         cd .cache 
-#         cookiecutter ../ --no-input --overwrite-if-exists project_name=test ${{ matrix.arg }}
-
-#         cd test 
-#         mv .env.example .env 
-
-#         docker-compose -f ${{ matrix.compose_file }} build 
-#         docker-compose -f ${{ matrix.compose_file }} up -d
-#         sleep 20
-
-#         echo "Testing curl - should return 200"
-#         curl http://localhost:5001/api/schema 
-
 

@@ -1,5 +1,5 @@
 # Python build stage
-FROM python as python-build-stage
+FROM python:3.9 as python-build-stage
 
 ARG BUILD_ENVIRONMENT=production
 
@@ -19,7 +19,7 @@ RUN pip wheel --wheel-dir /usr/src/app/wheels -r test.txt
 
 
 # Python 'run' stage
-FROM python as python-run-stage
+FROM python:3.9 as python-run-stage
 
 ARG BUILD_ENVIRONMENT=production
 ARG APP_HOME=/app

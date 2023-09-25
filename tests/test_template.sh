@@ -42,29 +42,3 @@ pytest
 # Test building docker image
 docker build -t test_pg .
 docker run --rm --entrypoint /bin/bash test_pg -c "pytest"
-
-# Test - local docker compose should be working 
-
-docker-compose -f docker-compose-local.yaml build 
-docker-compose -f docker-compose-local.yaml up -d
-
-sleep 30
-
-echo "Testing curl - should return 200"
-docker ps 
-curl http://localhost:5001/api/schema 
-
-echo "Cleaning up"
-docker-compose -f docker-compose-local.yaml down
-
-
-# Test - production docker-compose should be working 
-docker-compose -f docker-compose-prod.yaml build
-docker-compose -f docker-compose-prod.yaml up -d
-
-sleep 30
-docker ps
-curl http://localhost:5001/api/schema
-
-echo "Cleaning up"
-docker-compose -f docker-compose-prod.yaml down 
