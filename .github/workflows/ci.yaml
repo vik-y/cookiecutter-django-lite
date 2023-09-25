@@ -7,7 +7,7 @@ on:
 
 jobs:
   full_test:
-    runs-on: [ linux ]
+    runs-on: ubuntu-latest
 
     steps:
     - name: Check out code
