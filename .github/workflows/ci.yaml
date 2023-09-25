@@ -22,7 +22,7 @@ jobs:
       run: pip install cookiecutter
 
     - name: Install dependencies 
-      run: sudo apt-get update && apt-get install -y libpq-dev
+      run: sudo apt-get update && sudo apt-get install -y libpq-dev
 
     - name: Run shell tests
       run: bash tests/test_template.sh
